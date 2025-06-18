@@ -1,14 +1,17 @@
 workflows:
-  android-build:
-    name: Android APK Build
-    max_build_duration: 60
-    environment:
-      flutter: stable
-    scripts:
-      - name: Get dependencies
-        script: flutter pub get
-      - name: Build release APK
-        script: flutter build apk --release
-    artifacts:
-      - build/app/outputs/flutter-apk/app-release.apk
+    sample-workflow:
+        name: Codemagic Sample Workflow
+        max_build_duration: 120
+        instance_type: mac_mini_m2
+      scripts:
+    # ....
+  - name: Set Android SDK location
+    script: | 
+      echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/local.properties"
+  - name: Build Android release
+    script: | 
+      ./gradlew bundleRelease # -> to create the .aab
+      # gradlew assembleRelease # -> to create the .apk
 
+artifacts:
+  - app/build/outputs/**/*.aab
